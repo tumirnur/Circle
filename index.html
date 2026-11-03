@@ -1,5 +1,6 @@
-<!doctype html><html><head><meta charset=utf8><title>Мой день</title><meta name="theme-color" content="#F2F2F7"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Мой день"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><script src="store.js"></script><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#F2F2F7"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Мой день"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><script src="store.js"></script><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 
+<title>Мой день</title>
 <style>
 /* iPadOS-style: grouped background, inset cards, system type. Tint = Neon Navy, signal = orange, sleep = indigo. */
 :root{
@@ -137,6 +138,8 @@ button.stat:hover{background:var(--tint);border-radius:0 14px 14px 0}
 .row .body{border-left:3px solid var(--c,transparent);padding-left:10px}
 .row.gap{min-height:44px;cursor:pointer}
 .row.gap .tm{font-size:13px;color:var(--faint);padding:10px 0}
+.row.task .tm{touch-action:none;cursor:grab;align-self:stretch;display:flex;flex-direction:column;justify-content:center;border-radius:10px}
+.row.task .tm:active{background:var(--fill)}
 .row.gap .ttl{font-size:15px;color:var(--accent)}
 .row.gap .plus{grid-column:1;justify-self:center;color:var(--accent);font-size:22px;font-weight:300;line-height:1}
 .row.gap:hover{background:var(--tint)}
@@ -144,6 +147,8 @@ button.stat:hover{background:var(--tint);border-radius:0 14px 14px 0}
 .row.dragging::before{display:none}
 .row.drop-before{box-shadow:inset 0 3px 0 var(--orange)}
 .row.drop-gap{background:color-mix(in srgb,var(--orange) 14%,var(--card))}
+.dragtime{position:fixed;z-index:30;pointer-events:none;background:var(--orange);color:#fff;font-weight:700;font-size:15px;padding:6px 10px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.2);transform:translate(-100%,-50%);white-space:nowrap}
+.day.drop-day{outline:2px solid var(--orange);outline-offset:-2px;border-radius:10px}
 .pop{position:absolute;left:50%;top:50%;font-size:44px;color:var(--orange);transform:translate(-50%,-50%) scale(.3);opacity:0;pointer-events:none;animation:pop .6s ease-out}
 @keyframes pop{30%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
 .empty{color:var(--dim);font-size:15px;padding:14px 16px;line-height:1.4}
@@ -338,6 +343,26 @@ button.stat:hover{background:var(--tint);border-radius:0 14px 14px 0}
 .mt.done{color:var(--dim);text-decoration:line-through}
 .mmore{font-size:12px;color:var(--dim)}
 .mhint{font-size:13px;color:var(--dim);text-align:center;margin:0}
+/* study calendar */
+.sc{font-size:12px;line-height:1.25;padding:2px 6px;border-radius:6px;background:color-mix(in srgb,var(--c) 15%,transparent);border-left:3px solid var(--c);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mcell.out .sc{opacity:.45}
+.mcell.past .sc{opacity:.5}
+.sday,.ssum{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:6px 16px 10px}
+.sday h3,.ssum h3{font-size:13px;font-weight:600;color:var(--dim);text-transform:uppercase;margin:10px 0 4px}
+.srow{display:grid;grid-template-columns:96px 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.srow:first-of-type{border-top:0}
+.srow .tm{font-variant-numeric:tabular-nums;font-size:15px;font-weight:600}
+.srow .tm small{display:block;font-weight:400;color:var(--dim);font-size:13px}
+.srow .what{font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.srow .what i{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
+.srow .meta{font-size:14px;color:var(--dim);margin-top:2px}
+.srow .note{font-size:14px;margin-top:4px}
+.spill{font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--fill);color:var(--ink)}
+.spill.own{background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.ssub{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:baseline;padding:9px 0;border-top:1px solid var(--line)}
+.ssub:first-of-type{border-top:0}
+.ssub i{width:10px;height:10px;border-radius:50%;background:var(--c);display:inline-block}
+.ssub .m{color:var(--dim);font-size:14px;text-align:right}
 
 @media (max-width:880px){
   .main{grid-template-columns:1fr}
@@ -370,6 +395,7 @@ button.stat:hover{background:var(--tint);border-radius:0 14px 14px 0}
         <button class="tab" type="button" role="tab" data-view="day" id="tabDay">День</button>
         <button class="tab" type="button" role="tab" data-view="month" id="tabMonth">Календарь</button>
         <button class="tab" type="button" role="tab" data-view="debts" id="tabDebts">Задачи</button>
+        <button class="tab" type="button" role="tab" data-view="study" id="tabStudy">Учёба</button>
       </div>
       <button class="btn" id="todayBtn" type="button">Сегодня</button>
       <button class="btn go" id="addBtn" type="button">+ Задача</button>
@@ -384,6 +410,17 @@ button.stat:hover{background:var(--tint);border-radius:0 14px 14px 0}
     <div class="dgroup"><h3>Учебные обязательства <button class="btn plain" type="button" data-adddebt="duty">+ Добавить</button></h3><div class="dlist" id="dDuty"></div></div>
     <div class="dgroup"><h3>Успеваемость <span id="attSum" style="text-transform:none"></span></h3><div class="dlist" id="dAtt"></div></div>
     <div class="dgroup"><h3>Финансовые долги <button class="btn plain" type="button" data-adddebt="money">+ Добавить</button></h3><div class="dlist" id="dMoney"></div></div>
+  </section>
+
+  <section class="month" id="studyView" hidden aria-label="Учёба: когда что можно сдать">
+    <div class="mhead">
+      <button class="nav" type="button" data-snav="-1" aria-label="Предыдущий месяц">‹</button>
+      <h2 id="studyTitle"></h2>
+      <button class="nav" type="button" data-snav="1" aria-label="Следующий месяц">›</button>
+    </div>
+    <div class="mscroll"><div class="mgrid" id="sgrid"></div></div>
+    <div class="sday" id="sDay"></div>
+    <div class="ssum" id="sSum"></div>
   </section>
 
   <section class="month" id="monthView" hidden aria-label="Календарь на месяц">
@@ -597,6 +634,7 @@ button.stat:hover{background:var(--tint);border-radius:0 14px 14px 0}
     $("warn").hidden=db!==false;
     if(view==="month"){renderMonth();return}
     if(view==="debts"){renderDebts();return}
+    if(view==="study"){renderStudy();return}
     renderWeek();renderDay();renderDial();renderSide();
   }
 
@@ -640,7 +678,7 @@ button.stat:hover{background:var(--tint);border-radius:0 14px 14px 0}
     const untimed=list.filter(t=>!t.start);
     const cur=currentId();
     let h="", cursor=toMin(settings.dayStart), end=toMin(settings.dayEnd); if(end<=cursor) end=1440;
-    const gapRow=(a,b)=>`<div class="row gap" data-slot="${fromMin(a)}" role="button" tabindex="0"><span class="plus">+</span><span class="tm">${fromMin(a)}</span><span class="body"><span class="ttl">Окно ${fmtDur(b-a)}</span></span></div>`;
+    const gapRow=(a,b)=>`<div class="row gap" data-slot="${fromMin(a)}" data-end="${fromMin(b)}" role="button" tabindex="0"><span class="plus">+</span><span class="tm">${fromMin(a)}</span><span class="body"><span class="ttl">Окно ${fmtDur(b-a)}</span></span></div>`;
     const taskRow=t=>{const a=t.start?toMin(t.start):null;
       return `<div class="row task${t.done?" done":""}" data-id="${t.id}" style="--c:${catColor(t.category)}">
         ${isEv(t)?`<span class="evdot" aria-hidden="true"></span>`:`<button type="button" class="chk" data-toggle="${t.id}" aria-label="${t.done?"Вернуть":"Готово"}">${t.done?"✓":""}</button>`}
@@ -868,8 +906,8 @@ button.stat:hover{background:var(--tint);border-radius:0 14px 14px 0}
 
   /* ---------- month ---------- */
   function setView(v){view=v;
-    $("dayView").hidden=v!=="day"; $("monthView").hidden=v!=="month"; $("debtsView").hidden=v!=="debts";
-    $("tabDay").setAttribute("aria-selected",v==="day"); $("tabMonth").setAttribute("aria-selected",v==="month"); $("tabDebts").setAttribute("aria-selected",v==="debts");
+    $("dayView").hidden=v!=="day"; $("monthView").hidden=v!=="month"; $("debtsView").hidden=v!=="debts"; $("studyView").hidden=v!=="study";
+    $("tabDay").setAttribute("aria-selected",v==="day"); $("tabMonth").setAttribute("aria-selected",v==="month"); $("tabDebts").setAttribute("aria-selected",v==="debts"); $("tabStudy").setAttribute("aria-selected",v==="study");
     if(v==="month")mref=sel.slice(0,7)+"-01";
     render();
   }
@@ -889,6 +927,54 @@ button.stat:hover{background:var(--tint);border-radius:0 14px 14px 0}
     }
     $("mgrid").innerHTML=h;
   }
+
+  /* ---------- study: when and where something can be handed in ---------- */
+  let study=[], sref=todayStr().slice(0,7)+"-01", ssel=null;
+  const SPAL=["#007AFF","#FF9500","#AF52DE","#34C759","#FF2D55","#5AC8FA","#A2845E"];
+  function subjColor(e){ if(e.color) return e.color; const subs=[...new Set(study.map(x=>x.subj))].sort(); return SPAL[subs.indexOf(e.subj)%SPAL.length]||"#007AFF"; }
+  function normStudy(id,d){return {id,date:d.date||"",start:d.start||"",end:d.end||"",subj:d.subj||d.subject||"",subject:d.subject||d.subj||"",what:d.what||"",group:d.group||"",room:d.room||"",teacher:d.teacher||"",note:d.note||"",own:!!d.own,color:d.color||""}}
+  const studyDay=s=>study.filter(e=>e.date===s).sort((a,b)=>a.start.localeCompare(b.start));
+  // my own classes that day, two back-to-back slots of the same class merged into one
+  function myPairs(s){
+    const l=tasks.filter(t=>t.date===s&&t.start&&isLesson(t)).sort((a,b)=>toMin(a.start)-toMin(b.start)), out=[];
+    for(const t of l){const p=out[out.length-1], a=toMin(t.start), b=a+(t.duration||90);
+      if(p&&p.title===t.title&&a-p.end<=20){p.end=b;p.n++;p.done=p.done&&t.done}else out.push({title:t.title,start:a,end:b,room:t.room||"",note:t.note||"",n:1,done:!!t.done})}
+    return out;
+  }
+  function renderStudy(){
+    const first=parse(sref), y=first.getFullYear(), mo=first.getMonth(), today=todayStr();
+    if(!ssel){const nx=study.filter(e=>e.date>=today).map(e=>e.date).sort()[0];ssel=nx||today}
+    $("studyTitle").textContent="Учёба · "+MONN[mo]+" "+y;
+    let h=WD.map(w=>`<div class="mwd">${w}</div>`).join("");
+    let d=addDays(sref,-wd(sref)); const last=toStr(new Date(y,mo+1,0)), endGrid=addDays(last,6-wd(last));
+    while(d<=endGrid){
+      const l=studyDay(d), out=parse(d).getMonth()!==mo;
+      h+=`<button type="button" class="mcell${out?" out":""}${d<today?" past":""}${d===today?" today":""}${d===ssel?" sel":""}" data-sday="${d}">
+        <span class="mn">${myPairs(d).length?`<small>${myPairs(d).length} ${plural(myPairs(d).length,"пара","пары","пар")}</small>`:""}<span>${parse(d).getDate()}</span></span>
+        ${l.slice(0,3).map(e=>`<span class="sc" style="--c:${subjColor(e)}">${esc(e.subj)}${e.group?" · "+esc(e.group):""}</span>`).join("")}
+        ${l.length>3?`<span class="mmore">ещё ${l.length-3}</span>`:""}</button>`;
+      d=addDays(d,1);
+    }
+    $("sgrid").innerHTML=h;
+    const l=studyDay(ssel), dd=parse(ssel);
+    $("sDay").innerHTML=`<h3>${ssel===today?"Сегодня, ":""}${dd.getDate()} ${MON[dd.getMonth()]}, ${WDL[wd(ssel)]} · можно сдать</h3>`+
+      (l.length?l.map(e=>`<div class="srow" style="--c:${subjColor(e)}"><div class="tm">${esc(e.start)}${e.end?`<small>до ${esc(e.end)}</small>`:""}</div>
+        <div><div class="what"><i></i>${esc(e.subject)}${e.group?`<span class="spill${e.own?" own":""}">гр. ${esc(e.group)}${e.own?" · своя":""}</span>`:""}</div>
+        <div class="meta">${["Можно сдать: "+(e.what||"—"),e.room,e.teacher].filter(Boolean).map(esc).join(" · ")}</div>
+        ${e.note?`<div class="note">${esc(e.note)}</div>`:""}</div></div>`).join("")
+      :`<div class="dempty">В этот день сдавать нечего</div>`)
+      +(()=>{const mp=myPairs(ssel);return `<h3>Мои пары</h3>`+(mp.length?mp.map(p=>`<div class="srow" style="--c:var(--dim)"><div class="tm">${fromMin(p.start)}<small>до ${fromMin(p.end)}</small></div>
+        <div><div class="what"${p.done?' style="color:var(--dim)"':""}>${esc(p.title)}${p.n>1?`<span class="spill">${p.n} пары</span>`:""}${p.done?`<span class="spill">была</span>`:""}</div>
+        <div class="meta">${esc([p.room,p.note.replace(p.room,"").replace(/^[,\s]+/,"")].filter(Boolean).join(" · "))}</div></div></div>`).join(""):`<div class="dempty">Пар нет</div>`)})();
+    // remaining per subject
+    const by={}; study.filter(e=>e.date>=today).forEach(e=>{const k=e.subject+"|"+e.what;(by[k]=by[k]||{e,days:new Set(),last:""}).days.add(e.date);if(e.date>by[k].last)by[k].last=e.date});
+    const rows=Object.values(by).sort((a,b)=>a.e.subject.localeCompare(b.e.subject));
+    $("sSum").innerHTML=`<h3>Осталось</h3>`+(rows.length?rows.map(r=>`<div class="ssub" style="--c:${subjColor(r.e)}"><i></i><span>${esc(r.e.subject)} — ${esc(r.e.what)}</span><span class="m">${r.days.size} ${plural(r.days.size,"день","дня","дней")} · до ${parse(r.last).getDate()} ${MON[parse(r.last).getMonth()]}</span></div>`).join(""):`<div class="dempty">Пока ничего не добавлено</div>`);
+  }
+  document.addEventListener("click",e=>{
+    const c=e.target.closest("[data-sday]"); if(c){ssel=c.dataset.sday;renderStudy();return}
+    const n=e.target.closest("[data-snav]"); if(n){const f=parse(sref);f.setMonth(f.getMonth()+Number(n.dataset.snav));sref=toStr(f);renderStudy()}
+  });
 
   /* ---------- data ---------- */
   async function save(t){
@@ -1119,38 +1205,57 @@ button.stat:hover{background:var(--tint);border-radius:0 14px 14px 0}
     const row=e.target.closest(".row.task"); if(!row||e.target.closest(".chk"))return;
     if(e.pointerType==="mouse"&&e.button!==0)return;
     press={row,id:row.dataset.id,x:e.clientX,y:e.clientY};
-    press.timer=setTimeout(startDrag,420);
+    // grabbing the time column starts the drag at once; anywhere else — a short hold
+    if(e.target.closest(".tm")&&row.querySelector(".tm b")&&row.querySelector(".tm b").textContent!=="—"){e.preventDefault();startDrag();drag.cx=e.clientX;drag.cy=e.clientY;return}
+    press.timer=setTimeout(startDrag,300);
   });
   function startDrag(){
     if(!press)return;
     clearTimeout(tapTimer); lastTap={id:null,t:0};
-    drag={id:press.id,row:press.row,y0:press.y,target:null};
+    drag={id:press.id,row:press.row,y0:press.y,sy:window.scrollY,rowTop:press.row.getBoundingClientRect().top,cx:null,cy:null,min:null,day:null};
     press.row.classList.add("dragging");
     try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}
   }
   window.addEventListener("pointermove",e=>{
-    if(press&&!drag){if(Math.hypot(e.clientX-press.x,e.clientY-press.y)>8){clearTimeout(press.timer);press=null}return}
+    if(press&&!drag){if(Math.hypot(e.clientX-press.x,e.clientY-press.y)>14){clearTimeout(press.timer);press=null}return}
     if(!drag)return;
-    drag.row.style.transform=`translateY(${e.clientY-drag.y0}px) scale(1.02)`;
-    sched.querySelectorAll(".drop-before,.drop-gap").forEach(x=>x.classList.remove("drop-before","drop-gap"));
-    const el=document.elementFromPoint(e.clientX,e.clientY), tr=el&&el.closest("#sched .row");
-    drag.target=null;
-    if(tr&&tr!==drag.row){
-      if(tr.classList.contains("gap")){tr.classList.add("drop-gap");drag.target={gap:tr.dataset.slot}}
-      else if(tr.dataset.id){tr.classList.add("drop-before");drag.target={id:tr.dataset.id}}
-    }
+    drag.cx=e.clientX; drag.cy=e.clientY; dragUpdate();
   });
-  window.addEventListener("touchmove",e=>{if(drag)e.preventDefault()},{passive:false});
+  const MIN_PER_PX=1;
+  function dragUpdate(){
+    if(!drag||drag.cy==null)return;
+    const dy=drag.cy-drag.y0+(window.scrollY-drag.sy);
+    drag.row.style.transform=`translateY(${dy}px) scale(1.02)`;
+    document.querySelectorAll(".drop-day").forEach(x=>x.classList.remove("drop-day"));
+    const el=document.elementFromPoint(drag.cx,drag.cy), dayEl=el&&el.closest("[data-day]");
+    const t=tasks.find(x=>x.id===drag.id);
+    if(!drag.tip){drag.tip=document.createElement("div");drag.tip.className="dragtime";document.body.appendChild(drag.tip)}
+    if(dayEl){dayEl.classList.add("drop-day");drag.day=dayEl.dataset.day;drag.min=null;
+      drag.tip.textContent="→ "+fmtDate(drag.day)+(t&&t.start?" "+t.start:"")}
+    else{drag.day=null;
+      if(!t||!t.start){drag.tip.textContent="";return}
+      let m=toMin(t.start)+(drag.cy-drag.y0)*MIN_PER_PX;   // fixed scale: 1 px = 1 min, 5-min steps
+      m=Math.max(0,Math.min(1440-5,Math.round(m/5)*5)); drag.min=m;
+      drag.tip.textContent=fromMin(m)+(t?"–"+fromMin(Math.min(1439,m+(t.duration||0))):"")}
+    const rb=drag.row.getBoundingClientRect(); drag.tip.style.left=Math.max(90,rb.left+86)+"px"; drag.tip.style.top=(rb.top+rb.height/2)+"px";
+  }
+  // iPad: keep the drag alive on touch even if the browser cancels pointer events
+  window.addEventListener("touchmove",e=>{if(!drag)return;e.preventDefault();const t=e.touches[0];if(t){drag.cx=t.clientX;drag.cy=t.clientY;dragUpdate()}},{passive:false});
+  window.addEventListener("touchend",()=>{if(drag)endDrag()});
   function endDrag(){
     if(press){clearTimeout(press.timer);press=null}
     if(!drag)return;
     const d=drag; drag=null; suppressClick=true; setTimeout(()=>suppressClick=false,400);
+    if(d.tip)d.tip.remove();
     d.row.classList.remove("dragging"); d.row.style.transform="";
-    sched.querySelectorAll(".drop-before,.drop-gap").forEach(x=>x.classList.remove("drop-before","drop-gap"));
-    if(d.target) reorder(d.id,d.target); else render();
+    document.querySelectorAll(".drop-day").forEach(x=>x.classList.remove("drop-day"));
+    const t=tasks.find(x=>x.id===d.id); if(!t){render();return}
+    if(d.day&&d.day!==t.date){save({...t,date:d.day,skip:false});render();toast("Перенесено на "+fmtDate(d.day)+(t.start?" "+t.start:""));return}
+    if(d.min!=null&&d.cy!=null){const s=fromMin(d.min); if(s!==t.start){save({...t,date:sel,start:s});render();toast("Перенесено на "+s);return}}
+    render();
   }
   window.addEventListener("pointerup",endDrag);
-  window.addEventListener("pointercancel",endDrag);
+  window.addEventListener("pointercancel",e=>{if(drag&&e.pointerType==="touch")return;endDrag()});
 
   // Dropping on a task: take its place; every task keeps its slot unless the one before runs over.
   // Dropping on a free window: move there.
@@ -1396,12 +1501,13 @@ button.stat:hover{background:var(--tint);border-radius:0 14px 14px 0}
   swipe($("week"),goWeek);
   swipe($("dAtt"),d=>{const f=parse(attRef);f.setMonth(f.getMonth()+d);attRef=toStr(f);renderDebts()});
   swipe($("mgrid"),d=>{const f=parse(mref);f.setMonth(f.getMonth()+d);mref=toStr(f);renderMonth()});
+  swipe($("sgrid"),d=>{const f=parse(sref);f.setMonth(f.getMonth()+d);sref=toStr(f);renderStudy()});
   $("addBtn").onclick=()=>openSheet(null,{date:sel});
   $("todayBtn").onclick=()=>{sel=todayStr();mref=sel.slice(0,7)+"-01";render()};
   document.querySelector(".tabs").addEventListener("click",e=>{const b=e.target.closest("[data-view]");if(b)setView(b.dataset.view)});
   setInterval(()=>{if(view==="day"&&sel===todayStr()&&!drag&&!dragSleep){renderDay();renderDial()}},60000);
 
-  setView(location.hash==="#month"?"month":location.hash==="#debts"?"debts":"day");
+  setView(location.hash==="#month"?"month":location.hash==="#debts"?"debts":location.hash==="#study"?"study":"day");
 
   (async()=>{
     const c=window.claude&&window.claude.use?await window.claude.use("db"):null;
@@ -1410,6 +1516,7 @@ button.stat:hover{background:var(--tint);border-radius:0 14px 14px 0}
     db.collection("tasks").onSnapshot(snap=>{tasks=snap.docs.map(d=>norm(d.id,d.data()));if(!drag)render()},()=>{live=false;db=false;render()});
     db.collection("sleep").onSnapshot(snap=>{const o={};snap.docs.forEach(d=>{const x=d.data();if(x.bed&&x.wake)o[d.id]={bed:x.bed,wake:x.wake}});sleeps=o;if(!dragSleep)render()},()=>{});
     db.collection("debts").onSnapshot(snap=>{debts=snap.docs.map(d=>normDebt(d.id,d.data()));if(view==="debts")render()},()=>{});
+    db.collection("study").onSnapshot(snap=>{study=snap.docs.map(d=>normStudy(d.id,d.data()));if(view==="study")render()},()=>{});
     db.doc("config/settings").onSnapshot(s=>{
       if(s.exists){const d=s.data();settings={dayStart:d.dayStart||"08:00",dayEnd:d.dayEnd||"22:00",cats:Array.isArray(d.cats)&&d.cats.length?d.cats:DEF_CATS};render()}
     },()=>{});

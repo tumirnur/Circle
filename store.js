@@ -6,8 +6,9 @@
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) {} },
     del(k) { try { localStorage.removeItem(k); } catch (_) {} }
   };
-  const COLS = ["tasks", "sleep", "debts", "config"];
+  const COLS = ["tasks", "sleep", "debts", "config", "study"];
   let cfg = LS.get("md:cfg", null);          // {url, key}
+  if (cfg && cfg.url) cfg.url = cfg.url.replace(/\/(rest|auth|storage|realtime)\/v1.*$/i, "").replace(/\/+$/, "");
   let sess = LS.get("md:sess", null);        // {access_token, refresh_token, expires_at, email}
   const cache = {};                          // col -> {id: data}
   COLS.forEach(c => cache[c] = LS.get("md:c:" + c, {}));
@@ -194,7 +195,7 @@
       const f = g.querySelector("form"), err = g.querySelector("#mdErr");
       async function go(signup) {
         err.textContent = "";
-        const url = f.url.value.trim(), key = f.key.value.trim();
+        const url = f.url.value.trim().replace(/\/(rest|auth|storage|realtime)\/v1.*$/i, "").replace(/\/+$/, ""), key = f.key.value.trim(); f.url.value = url;
         if (!/^https?:\/\/.+/.test(url) || key.length < 20) { err.textContent = "Заполни адрес и ключ базы"; g.querySelector("details").open = true; return; }
         cfg = { url, key }; LS.set("md:cfg", cfg);
         const email = f.email.value.trim(), password = f.pw.value;
